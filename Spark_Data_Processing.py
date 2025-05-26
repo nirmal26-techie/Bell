@@ -35,7 +35,7 @@ df_customers = df_customers.filter(col("customer_id").isNotNull())\
 
 
 import subprocess
-path_exists_customer =subprocess.run(["gcp","gs","ls","gs://processedlayersilver/customers_proce/"],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+path_exists_customer =subprocess.run(["gsutil","ls","gs://processedlayersilver/customers_proce/"],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
 
 if not path_exists_customer:
 
@@ -70,7 +70,7 @@ df_billing = df_billing.withColumn("billing_month", to_date("billing_month")) \
        .withColumn("amount_due", col("amount_due").cast("double")) \
        .withColumn("amount_paid", col("amount_paid").cast("double"))
 
-path_exists_billing =subprocess.run(["gcp","gs","ls","gs://processedlayersilver/billing_processed/"],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+path_exists_billing =subprocess.run(["gsutil","ls","gs://processedlayersilver/billing_processed/"],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
 
 if not path_exists_billing:
     df_billing.write.format("delta").save("gs://processedlayersilver/billing_processed/")                                # writing for the first time
@@ -112,7 +112,7 @@ df_usage = df_usage.withColumn("usage_category", when(col("total_usage_score") >
 
 df_usage = df_usage.withColumn("is_weekend", when(dayofweek("usage_date").isin([1, 7]), True).otherwise(False))
 
-path_exists_usage =subprocess.run(["gcp","gs","ls","gs://processedlayersilver/usage_processed/"],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+path_exists_usage =subprocess.run(["gsutil","ls","gs://processedlayersilver/usage_processed/"],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
 
 if not path_exists_usage:
     df_usage.write.format("delta").save("gs://processedlayersilver/usage_processed/")                                    # if path doesn exists its gonna be the first write

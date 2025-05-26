@@ -46,7 +46,7 @@ else:
     delta_table_customers = DeltaTable.forPath(spark,"gs://processedlayersilver/customers_proce/")                        # I am gonna write in destination as a delta format(to take care of incrmental loading,schema evolution,updates)
     #Update old records in Delta (set is_current = No, set valid_to)
     delta_table_customers.alias("target").merge(
-        source=df_increment.alias("source"),
+        source=df_cusomers.alias("source"),
         condition="target.customer_id = source.customer_id AND target.is_current = 'Yes'"
     ).whenMatchedUpdate(set={
         "valid_to": col("source.valid_from"),
@@ -55,7 +55,7 @@ else:
 
 # Insert new records (updated or new customers)
 delta_table.alias("target").merge(
-    source=df_increment.alias("source"),
+    source=df_cusomers.alias("source"),
     condition="target.customer_id = source.customer_id AND target.valid_from = source.valid_from"
 ).whenNotMatchedInsertAll().execute()
 

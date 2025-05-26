@@ -9,7 +9,7 @@ from pyspark.sql.functions import col, lit, max as max_, to_date
 from pyspark.sql.functions import max as spark_max
 
 
-conf = SparkConf().setAppName("pyspark").setMaster("local[*]").set("spark.driver.host","localhost").set("spark.driver.allowMultipleContexts","true")
+conf = SparkConf().setAppName("pyspark").getOrCreate()
 sc = SparkContext(conf=conf)
 spark = SparkSession.builder \
     .appName("DeltaApp") \
